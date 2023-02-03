@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <form th:action="@{/admin/addUser}"
+          th:object="${user}" method="POST">
+        Email:
+        <input type="text" th:charset="utf-8" th:field="*{username}" />
+        <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Name Error</span>
+        <br/>
+        Password:
+        <input type="text" th:charset="utf-8" th:field="*{password}" />
+        <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Name Error</span>
+        <br/>
+        First Name:
+        <input type="text" th:charset="utf-8" th:field="*{firstName}" />
+        <span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">Name Error</span>
+        <br/>
+        Last Name:
+        <input type="text" th:charset="utf-8" th:field="*{lastName}" />
+        <span th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">Name Error</span>
+        <br/>
+        Age:
+        <input type="number" th:charset="utf-8" th:field="*{age}"  />
+        <br/>
+        <br/>
+        <select class="form-control" th:field="*{roles}" multiple="multiple" >
+            <option th:each="role : ${roles}"
+                    th:field="*{roles}"
+                    th:value="${role.id}"
+                    th:text="${role.name}">Roles</option>
+        </select>
+        <span th:if="${#fields.hasErrors('roles')}" th:errors="*{roles}">Name Error</span>
+        <br/>
+        <br/>
+        <button type="submit">Add</button>
+        <input type="hidden" th:field="*{id}" />
+    </form>
+    <br/>
+    <form th:action="@{/logout}" method="POST">
+        <button type="submit">Logout</button>
+    </form>
+</body>
+</html>
