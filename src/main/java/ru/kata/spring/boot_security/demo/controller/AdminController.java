@@ -1,22 +1,27 @@
 package ru.kata.spring.boot_security.demo.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.entity.User;
-import ru.kata.spring.boot_security.demo.service.UserService;
+import ru.kata.spring.boot_security.demo.service.RoleServiceImpl;
+import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 
 
 @Controller
 @RequestMapping(value = "/admin")
 public class AdminController {
 
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
-    public AdminController(UserService userService) {
+    private final RoleServiceImpl roleService;
+
+    public AdminController(UserServiceImpl userService, RoleServiceImpl roleService) {
         this.userService = userService;
+        this.roleService = roleService;
     }
 
     @GetMapping(value = "")
@@ -28,7 +33,7 @@ public class AdminController {
     @GetMapping(value = "/addUser")
     public String showAddUserForm(ModelMap model) {
         model.addAttribute("user", new User());
-        model.addAttribute("roles", userService.getRolesList());
+        model.addAttribute("roles", roleService.getRolesList());
         return "addUser";
     }
 
@@ -42,11 +47,10 @@ public class AdminController {
 
         if (bindingResult.hasErrors() || hasUser) {
             model.addAttribute("user", user);
-            model.addAttribute("roles", userService.getRolesList());
+            model.addAttribute("roles", roleService.getRolesList());
             return "addUser";
         }
 
-        user.setPassword(userService.encodePassword(user.getPassword()));
         userService.saveUser(user);
         return "redirect:/admin";
     }
@@ -54,7 +58,7 @@ public class AdminController {
     @GetMapping(value = "/editUser")
     public String showEditPage(ModelMap model, @RequestParam long id) {
         model.addAttribute("user", userService.getUserById(id));
-        model.addAttribute("roles", userService.getRolesList());
+        model.addAttribute("roles", roleService.getRolesList());
         return "editUser";
     }
 
@@ -70,14 +74,11 @@ public class AdminController {
 
         if (bindingResult.hasErrors() || (hasUser && !isSameUsers)) {
             model.addAttribute("user", user);
-            model.addAttribute("roles", userService.getRolesList());
+            model.addAttribute("roles", roleService.getRolesList());
             return "editUser";
         }
 
-        if (!user.getPassword().equals(userService.getUserById(user.getId()).get().getPassword())) {
-            user.setPassword(userService.encodePassword(user.getPassword()));
-        }
-        userService.saveUser(user);
+        userService.updateUser(user);
         return "redirect:/admin";
     }
 
