@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import ru.kata.spring.boot_security.demo.service.UserService;
 import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 
 import java.security.Principal;
@@ -13,9 +14,9 @@ import java.security.Principal;
 @RequestMapping("user")
 public class UserController {
 
-    private final UserServiceImpl userService;
+    private final UserService userService;
 
-    public UserController(UserServiceImpl userService) {
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
